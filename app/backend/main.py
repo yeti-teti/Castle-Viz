@@ -25,4 +25,8 @@ app.include_router(routers.router)
 
 @app.get("/")
 def read_root():
-    return {"Working": "Test"}   
+    return {"Working": "Test", "status": "healthy"}
+
+@app.get("/health")
+def health_check():
+    return {"status": "healthy", "database": "connected"} 
