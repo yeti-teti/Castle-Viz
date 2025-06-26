@@ -4,10 +4,7 @@ import { authConfig } from "./auth.config";
 import { z } from "zod";
 import type { User } from "@/lib/definitions";
 import bcrypt from "bcryptjs";
-import postgres from "postgres";
-
 import { apiService } from "./lib/api";
-
 
 async function getUser(email: string): Promise<User | undefined> {
   try {
@@ -19,7 +16,7 @@ async function getUser(email: string): Promise<User | undefined> {
   }
 }
 
-export const { auth, signIn, signOut } = NextAuth({
+export const { auth, signIn, signOut, handlers } = NextAuth({
   ...authConfig,
   providers: [
     Credentials({
