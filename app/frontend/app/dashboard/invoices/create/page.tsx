@@ -2,6 +2,8 @@ import Form from "@/components/ui/invoices/create-form";
 import Breadcrumbs from "@/components/ui/invoices/breadcrumbs";
 import { fetchVendors, fetchCategories } from "@/lib/actions";
 
+export const dynamic = 'force-dynamic'
+
 export default async function Page() {
   const [vendors, categories] = await Promise.all([
     fetchVendors(),

@@ -7,6 +7,8 @@ import { InvoicesTableSkeleton } from "@/components/ui/skeletons";
 import { Suspense } from "react";
 import { fetchExpensesPages } from "@/lib/new-data";
 
+export const dynamic = 'force-dynamic'
+
 export default async function Page(props: {
   searchParams?: Promise<{
     query?: string;

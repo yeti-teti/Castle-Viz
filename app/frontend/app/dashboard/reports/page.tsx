@@ -1,6 +1,8 @@
 import Header from "./_components/Header"
 import { TransactionChart } from "./_components/TransactionChart"
 
+export const dynamic = 'force-dynamic'
+
 export default function Page() {
   return (
     <>
