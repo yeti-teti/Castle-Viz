@@ -6,8 +6,8 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { VendorField, CategoryField, BillForm } from "@/lib/definitions";
+import { apiService } from './api';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 const BillFormSchema = z.object({
   id: z.string(),
@@ -56,7 +56,6 @@ export async function createBill(prevState: State, formData: FormData) {
   const amountInCents = Math.round(amount * 100);
 
   try {
-    const endpoint = status === 'paid' ? '/payments/' : '/bills/';
     const payload = {
       vendor,
       category,
@@ -65,17 +64,10 @@ export async function createBill(prevState: State, formData: FormData) {
       ...(status === 'pending' && { status })
     };
 
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+    if (status === 'paid') {
+      await apiService.createPayment(payload);
+    } else {
+      await apiService.createBill(payload);
     }
 
   } catch (error) {
@@ -113,24 +105,18 @@ export async function updateBill(
   const amountInCents = Math.round(amount * 100);
 
   try {
-    const endpoint = status === 'paid' ? `/payments/${id}` : `/bills/${id}`;
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        vendor,
-        category,
-        amount: amountInCents,
-        status,
-        user_id,
-      }),
-    });
+    const payload = {
+      vendor,
+      category,
+      amount: amountInCents,
+      status,
+      user_id,
+    };
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+    if (status === 'paid') {
+      await apiService.updatePayment(id, payload);
+    } else {
+      await apiService.updateBill(id, payload);
     }
   } catch (error) {
     console.error('API Error:', error);
@@ -144,87 +130,42 @@ export async function updateBill(
 
 export async function fetchVendors(): Promise<VendorField[]> {
   try {
-    const response = await fetch(`${API_BASE_URL}/vendors/`, {
-      headers: { 'Content-Type': 'application/json' }
-    });
-
-    if (!response.ok) {
-      console.error('Failed to fetch vendors:', response.status);
-      return [];
-    }
-
-    const vendors: string[] = await response.json();
-    
-    return vendors.map((vendor, index) => ({
-      id: index.toString(),
-      name: vendor
-    }));
+      const vendors = await apiService.getVendors();
+      return vendors.map((vendor, index) => ({
+          id: index.toString(),
+          name: vendor
+      }));
   } catch (error) {
-    console.error('Failed to fetch vendors:', error);
-    return [];
+      console.error('Failed to fetch vendors:', error);
+      return [];
   }
 }
 
 
 export async function fetchCategories(): Promise<CategoryField[]> {
   try {
-    const response = await fetch(`${API_BASE_URL}/categories/`, {
-      headers: { 'Content-Type': 'application/json' }
-    });
-
-    if (!response.ok) {
-      console.error('Failed to fetch categories:', response.status);
-      return [];
-    }
-
-    const categories: string[] = await response.json();
-    
-    return categories.map((category, index) => ({
-      id: index.toString(),
-      name: category
-    }));
+      const categories = await apiService.getCategories();
+      return categories.map((category, index) => ({
+          id: index.toString(),
+          name: category
+      }));
   } catch (error) {
-    console.error('Failed to fetch categories:', error);
-    return [];
+      console.error('Failed to fetch categories:', error);
+      return [];
   }
 }
 
 export async function fetchBillById(id: string): Promise<BillForm | null> {
   try {
-    // Try bills first
-    let response = await fetch(`${API_BASE_URL}/bills/${id}`, {
-      headers: { 'Content-Type': 'application/json' }
-    });
-    
-    if (response.ok) {
-      const bill = await response.json();
-      return {
-        id: bill.id,
-        vendor: bill.vendor,
-        category: bill.category,
-        amount: bill.amount / 100, 
-        status: bill.status,
-        user_id: bill.user_id,
-      };
-    }
-
-    response = await fetch(`${API_BASE_URL}/payments/${id}`, {
-      headers: { 'Content-Type': 'application/json' }
-    });
-    
-    if (response.ok) {
-      const payment = await response.json();
-      return {
-        id: payment.id,
-        vendor: payment.vendor,
-        category: payment.category,
-        amount: payment.amount / 100,
-        status: 'paid' as const,
-        user_id: payment.user_id,
-      };
-    }
-
-    return null;
+    const item = await apiService.fetchItemById(id);
+    return {
+      id: item.id,
+      vendor: item.vendor,
+      category: item.category,
+      amount: item.amount / 100,
+      status: item.status,
+      user_id: item.user_id,
+    };
   } catch (error) {
     console.error('Failed to fetch bill:', error);
     return null;
@@ -252,32 +193,15 @@ export async function authenticate(
 
 export async function deleteInvoice(id: string) {
   try {
-    // Try to delete from bills first
-    let response = await fetch(`${API_BASE_URL}/bills/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    // If not found in bills, try payments
-    if (response.status === 404) {
-      response = await fetch(`${API_BASE_URL}/payments/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+    // Try deleting as bill first, then as payment
+    try {
+      await apiService.deleteBill(id);
+    } catch (billError) {
+      await apiService.deletePayment(id);
     }
-
-    if (!response.ok && response.status !== 404) {
-      const errorText = await response.text();
-      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-    }
-
   } catch (error) {
-    console.error('API Error:', error);
-    throw new Error("Failed to delete expense.");
+    console.error('Failed to delete invoice:', error);
+    throw new Error('Failed to delete invoice');
   }
 
   revalidatePath("/dashboard/invoices");

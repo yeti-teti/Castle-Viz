@@ -8,7 +8,7 @@ import {
     MonthlyExpense
 } from "@/lib/definitions"
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://localhost:8080";
 
 class ApiService{
 
@@ -133,6 +133,56 @@ class ApiService{
 
     async getCategories(): Promise<string[]> {
         return this.request<string[]>('/categories/');
+    }
+
+    async updateBill(billId: string, billData: any): Promise<Bill> {
+        return this.request<Bill>(`/bills/${billId}`, {
+            method: 'PUT',
+            body: JSON.stringify(billData),
+        });
+    }
+    
+    async deleteBill(billId: string): Promise<{message: string}> {
+        return this.request<{message: string}>(`/bills/${billId}`, {
+            method: 'DELETE',
+        });
+    }
+    
+    async updatePayment(paymentId: string, paymentData: any): Promise<Payment> {
+        return this.request<Payment>(`/payments/${paymentId}`, {
+            method: 'PUT',
+            body: JSON.stringify(paymentData),
+        });
+    }
+    
+    async deletePayment(paymentId: string): Promise<{message: string}> {
+        return this.request<{message: string}>(`/payments/${paymentId}`, {
+            method: 'DELETE',
+        });
+    }
+    
+    async getBillById(billId: string): Promise<Bill> {
+        return this.request<Bill>(`/bills/${billId}`);
+    }
+    
+    async getPaymentById(paymentId: string): Promise<Payment> {
+        return this.request<Payment>(`/payments/${paymentId}`);
+    }
+
+    async fetchItemById(id: string): Promise<any> {
+        try {
+            return await this.getBillById(id);
+        } catch (billError) {
+            try {
+                const payment = await this.getPaymentById(id);
+                return {
+                    ...payment,
+                    status: 'paid'
+                };
+            } catch (paymentError) {
+                throw new Error(`Item with ID ${id} not found`);
+            }
+        }
     }
 }
 
