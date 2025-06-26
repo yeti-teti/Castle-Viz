@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  background-color: #f0dfc0;
+}
+
+.card-bg {
+  background-color: #f7ead4;
+}
+
+.sidebar-bg {
+  background-color: #f7ead4;
+}
+
 input[type='number'] {
   -moz-appearance: textfield;
   appearance: textfield;
@@ -15,4 +27,8 @@ input[type='number']::-webkit-inner-spin-button {
 input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+.homepage-bg {
+  background-color: #f0dfc0;
 }

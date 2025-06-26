@@ -11,8 +11,8 @@ export default async function LatestPayments() {
       <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
         Latest Payments
       </h2>
-      <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">
-        <div className="bg-white px-6">
+      <div className="flex grow flex-col justify-between rounded-xl card-bg p-4 border border-gray-100 shadow-sm">
+        <div className="bg-white px-6 rounded-lg">
           {latestPayments.map((payment, i) => {
             return (
               <div

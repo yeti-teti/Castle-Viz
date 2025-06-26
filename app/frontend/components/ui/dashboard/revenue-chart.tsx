@@ -40,9 +40,9 @@ export default function ExpensesChart() {
         <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
           Recent Expenses
         </h2>
-        <div className="rounded-xl bg-gray-50 p-4">
+        <div className="rounded-xl card-bg p-4 border border-gray-100 shadow-sm">
           <div className="rounded-md bg-white p-4">
-            <div className="h-80 animate-pulse bg-gray-100 rounded-md"></div>
+            <div className="h-80 animate-pulse bg-gray-200 rounded-md"></div>
           </div>
           <div className="flex items-center pb-2 pt-6">
             <CalendarIcon className="h-5 w-5 text-gray-500" />
@@ -59,7 +59,7 @@ export default function ExpensesChart() {
         <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
           Recent Expenses
         </h2>
-        <div className="rounded-xl bg-gray-50 p-4">
+        <div className="rounded-xl card-bg p-4 border border-gray-100 shadow-sm">
           <div className="rounded-md bg-white p-4 text-center">
             <p className="text-gray-400">{error}</p>
           </div>
@@ -74,7 +74,7 @@ export default function ExpensesChart() {
         <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
           Recent Expenses
         </h2>
-        <div className="rounded-xl bg-gray-50 p-4">
+        <div className="rounded-xl card-bg p-4 border border-gray-100 shadow-sm">
           <div className="rounded-md bg-white p-4 text-center">
             <p className="text-gray-400">No data available.</p>
           </div>
@@ -95,7 +95,7 @@ export default function ExpensesChart() {
         Recent Expenses
       </h2>
 
-      <div className="rounded-xl bg-gray-50 p-4">
+      <div className="rounded-xl card-bg p-4 border border-gray-100 shadow-sm">
         <div className="rounded-md bg-white p-4">
           <BarChartVariant
             data={chartData}

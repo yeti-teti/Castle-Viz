@@ -59,9 +59,9 @@ export default function Header() {
     <section
       aria-labelledby="reports-title"
       className={cx(
-        "top-16 z-50 flex flex-col gap-6 bg-white py-6 md:flex-row md:flex-wrap md:items-center md:justify-between lg:top-0 dark:bg-black-925",
+        "top-16 z-50 card-bg rounded-xl p-6 shadow-sm border border-gray-200 mb-6 lg:top-0",
         scrolled &&
-          "border-b border-black-200 transition-all dark:border-black-900",
+          "border-b border-gray-300 transition-all",
       )}
     >
       <div className="space-y-1">
@@ -71,7 +71,7 @@ export default function Header() {
         >
           Reports
         </h1>
-        <FormattedDate />
+        
       </div>
       <Accordion type="single" collapsible className="block md:hidden">
         <AccordionItem className="rounded-md border" value="1">
