@@ -48,7 +48,7 @@
 
 ## Database Schema
 
-![Database Schema](https://drive.google.com/file/d/1gB3INhMJSI_o13OASkb37O8P6xM2lANc/view?usp=sharing)
+![Database Schema](https://drive.google.com/uc?export=view&id=1gB3INhMJSI_o13OASkb37O8P6xM2lANc)
 
 ### Tables Overview
 
