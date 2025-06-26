@@ -33,19 +33,22 @@ function FilterAmount() {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const expenses = await apiService.getFilteredExpenses('', 1, 1000); // Get a large number
+        console.log('Fetching transaction amounts...'); // Debug log
+        const expenses = await apiService.getFilteredExpenses('', 1, 1000);
+        console.log('Amount filter expenses:', expenses); // Debug log
+        
         const transactionData = expenses.map(expense => ({
           amount: expense.amount
         }));
         setTransactions(transactionData);
       } catch (error) {
         console.error("Failed to fetch transaction data:", error);
-        // Set some default data if API fails
+        
         setTransactions([
-          { amount: 50000 }, // $500
-          { amount: 150000 }, // $1500
-          { amount: 300000 }, // $3000
-          { amount: 75000 }, // $750
+          { amount: 50000 }, 
+          { amount: 150000 }, 
+          { amount: 300000 },
+          { amount: 75000 }, 
         ]);
       } finally {
         setLoading(false);

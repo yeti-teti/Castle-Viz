@@ -209,8 +209,11 @@ export function TransactionChart({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Get all transactions from the filtered expenses endpoint
-        const expenses = await apiService.getFilteredExpenses('', 1, 1000); // Get a large number
+        console.log('Fetching transactions for reports...'); 
+        
+        const expenses = await apiService.getFilteredExpenses('', 1, 1000); 
+        console.log('Reports transactions:', expenses); 
+        
         const allTransactions: RealTransaction[] = expenses.map(expense => ({
           id: expense.id,
           category: expense.category,
@@ -222,11 +225,13 @@ export function TransactionChart({
         setTransactions(allTransactions);
       } catch (error) {
         console.error("Failed to fetch transactions:", error);
+        
+        setTransactions([]);
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchData();
   }, []);
 

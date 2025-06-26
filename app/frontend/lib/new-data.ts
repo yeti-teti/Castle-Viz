@@ -7,7 +7,7 @@ export async function fetchLatestPayments() {
     return latestPayments;
   } catch (error) {
     console.error("API Error:", error);
-    throw new Error("Failed to fetch the latest payments");
+    return []; 
   }
 }
 
@@ -17,7 +17,13 @@ export async function fetchCardData() {
     return cardData;
   } catch (error) {
     console.error("API Error:", error);
-    throw new Error("Failed to fetch card data.");
+    
+    return {
+      totalPayments: "$0.00",
+      pendingBills: "$0.00",
+      totalBills: 0,
+      totalCategories: 0
+    };
   }
 }
 
@@ -39,7 +45,7 @@ export async function fetchFilteredExpenses(
     return expenses;
   } catch (error) {
     console.error("API Error:", error);
-    throw new Error("Failed to fetch expenses.");
+    return []; 
   }
 }
 
@@ -49,7 +55,7 @@ export async function fetchExpensesPages(query: string) {
     return result.total_pages;
   } catch (error) {
     console.error("API Error:", error);
-    throw new Error("Failed to fetch total number of expenses.");
+    return 1;
   }
 }
 
@@ -64,6 +70,6 @@ export async function fetchExpenses(): Promise<MonthlyExpense[]>{
     return expenses;
   } catch(error){
     console.error("API Error:", error);
-    throw new Error("Failed to fetch monthly expenses");
+    return [];
   }
 }
