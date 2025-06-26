@@ -1,0 +1,18 @@
+
+- Change Acme to Castle Viz
+- Home
+    - Change Collections to Paid Expenses
+    - Change Total Invoices to Total Payments 
+    - Change Total Bills
+    - Change Latest Invoices to Latest Payments
+    - Change Recent Revenue Expenses (Showing Month by month Expenses)
+- Invoices (Change to Payments)
+    - Change Invoices on top Left to Payments
+    - Change Create Invoice on the top right to New Bill 
+    - Change the Invoices Schema
+    - Customer -> Vendor
+    - Remove Email
+    - Change Edit Invoice to Edit Payment
+        - Change Choose Customer to Choose Vendor
+- Customers (Change to Insights)
+    - Create a new table to get the values to display
